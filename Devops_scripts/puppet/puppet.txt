@@ -1,0 +1,66 @@
+Puppet is a configuration management tool developed by Puppet Labs in order to automate infrastructure management and configuration. 
+
+Puppet is a very powerful tool which helps in the concept of Infrastructure as code.
+
+ This tool is written in Ruby DSL language that helps in converting a complete infrastructure in code format, which can be easily managed and configured.
+
+ Puppet follows client-server model, where one machine in any cluster acts as client known as puppet master and the other acts as server known as slave on node.
+
+ one can safely run the same set of configuration multiple times on the same machine. 
+
+ Puppet checks for the current status of the target machine and will only make changes when there is any specific change in the configuration.
+
+ 
+ Puppet Resources
+
+   Puppet resources are the key components for modeling any particular machine. 
+
+
+ Providers
+        
+        Providers are basically fulfillers of any particular resource used in Puppet.
+
+        For example, the package type ‘apt-get’ and ‘yum’ both are valid for package management.
+
+ Manifest
+
+     Manifest is a collection of resources which are coupled inside the function or classes to configure any target  system. They contain a set of Ruby code in order to configure a system.
+
+ Modules
+
+   Module is the key building block of Puppet, which can be defined as a collection of resources, files, templates, etc.
+
+
+ Templates
+
+   Templates use Ruby expressions to define the customized content and variable input.
+
+   For example, if one wants to define httpd with a customizable port, then it can be done using the following expression.
+
+   Listen <% = @httpd_port %>  httpd_port is a variable defined in manifest that references this template.
+
+ Static Files
+
+    Static files can be defined as a general file which are sometimes required to perform specific tasks. They can be simply copied from one location to another using Puppet. 
+    
+    All static files are located inside the files directory of any module. Any manipulation of the file in a manifest is done using the file resource.
+
+ Puppet Master
+
+   Puppet Master is the key mechanism which handles all the configuration related stuff. It applies the configuration to nodes using the Puppet agent.
+
+Puppet Agent
+
+   Puppet Agents are the actual working machines which are managed by the Puppet master. They have the Puppet agent 
+   daemon service running inside them.
+
+Config Repository
+
+   This is the repo where all nodes and server-related configurations are saved and pulled when required.
+   Facts
+
+   Facts are the details related to the node or the master machine, which are basically used for analyzing the current status of any node. On the basis of facts, changes are done on any target machine. There are pre-defined and custom facts in Puppet.
+
+Catalog
+
+   All the manifest files or configuration which are written in Puppet are first converted to a compiled format called catalog and later those catalogs are applied on the target machine.

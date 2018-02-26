@@ -1,0 +1,98 @@
+- name: Install dependencies
+  yum: name="{{ item }}" state=present
+   with_items:
+     - gcc 
+     - glibc 
+     - glibc-common 
+     - gd 
+     - gd-devel 
+     - make 
+     - net-snmp 
+     - openssl-devel 
+     - xinetd 
+     - unzip
+
+
+- name: Create a Nagios Group
+  group: name=nagcmd state=present
+
+- name: Create Nagios User and Group
+  user: name=nagios group=nagcmd state=present
+
+- name: Install Nagios Core
+  get_url: url=https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.1.1.tar.gz  dest=/root/
+
+- name: Unarchiving the Nagios Folder
+  unarchive: src=/root/nagios-4.1.1.tar.gz dest=/root/
+
+- name: Configuring the Nagios
+  command: chdir=/root/nagios-4.1.1/ ./configure --with-command-group=nagcmd 
+
+- name: Compile and Install
+  command: chdir=/root/nagios-4.1.1 {{ item }}
+    with_items:
+      - make all
+      - make install
+      - make install-commandmode
+      - make install-init
+      - make install-config
+      - make install-webconf
+
+- name: Adding Apache user to Nagcmd for executinfg commands from web interface
+  user: name=apache group=nagcmd state=present
+
+- name: Install Nagios Plugins
+  get_url: url=http://nagios-plugins.org/download/nagios-plugins-2.1.1.tar.gz dest=/root/
+
+- name: unarchiving the Nagios Plugins
+  unarchive: src=/root/nagios-plugins-2.1.1.tar.gz dest=/root/
+
+- name: Change directory
+  command: chdir=/root/nagios-plugins-2.1.1/ ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl
+
+- name: Compile and Install
+  command: chdir=/root/nagios-plugins-2.1.1 {{ item }}
+    with_items:
+      - make 
+      - make install
+
+- name: Install Nrpe
+  get_url: url=http://downloads.sourceforge.net/project/nagios/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz dest=/root/
+
+- name: Extract Nrpe
+  unarchive: src=/root/nrpe-2.15.tar.gz dest=/root/
+
+- name: Configure the Nrpe
+  command: chdir=/root/nrpe-2.15 ./configure --enable-command-args --with-nagios-user=nagios --with-nagios-group=nagios --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu
+
+-name: Compile and Install Nrpe
+ command: chdir=/root/nrpe-2.15 {{ item }}
+  with_items:
+    - make all
+    - make install
+    - make install-xinetd
+    - make install-daemon-config
+
+- name: Xinetd script
+  template: src=nrpe.j2 dest=/etc/xinetd.d/nrpe
+  notiy: Restart xinetd
+
+- name: Create directory servers
+  file: path=/usr/local/nagios/etc/servers state=directory
+
+- name: Configure Command.cfg
+  template: src=commands.cfg.j2 dest=/usr/local/nagios/etc/objets/commands.cfg
+
+- name: Configure Apache
+  command: htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+  notify: restart httpd
+
+- name: Start Nagios
+  service: name=nagios state=started
+
+- name: Restart http
+  service: name=httpd state=restarted
+
+- name: Reload daemon
+  systemd: daemon-reload=yes
+

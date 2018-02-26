@@ -1,0 +1,65 @@
+cd /opt/
+
+#java installing java
+
+wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz"
+tar xzf jdk-8u151-linux-x64.tar.gz
+alternatives --install /usr/bin/java java /opt/jdk1.8.0_151/bin/java 2
+alternatives --config java
+alternatives --install /usr/bin/jar jar /opt/jdk1.8.0_151/bin/jar 2
+alternatives --install /usr/bin/javac javac /opt/jdk1.8.0_151/bin/javac 2
+alternatives --set jar /opt/jdk1.8.0_151/bin/jar
+alternatives --set javac /opt/jdk1.8.0_151/bin/javac
+export JAVA_HOME=/opt/jdk1.8.0_151
+export JRE_HOME=/opt/jdk1.8.0_151/jre
+export PATH=$PATH:/opt/jdk1.8.0_151/bin:/opt/jdk1.8.0_151/jre/bin
+
+####maven install
+wget http://www-eu.apache.org/dist/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz
+mkdir maven
+tar xzf apache-maven-3.0.5-bin.tar.gz -C maven --strip-components 1
+ln -s /opt/maven/bin/mvn /usr/bin/mvn
+*create file :
+vi /etc/profile.d/maven.sh
+#!/bin/bash
+MAVEN_HOME=/opt/maven
+PATH=$MAVEN_HOME/bin:$PATH
+export PATH MAVEN_HOME
+export CLASSPATH=.
+$chmod +x /etc/profile.d/maven.sh
+$source /etc/profile.d/maven.sh
+$mvn -version
+$echo $MAVEN_HOME
+$echo $PATH
+$mvn --version
+
+##### install sonatype nexus 2.11.2-06 version
+wget http://download.sonatype.com/nexus/oss/nexus-2.11.2-06-bundle.tar.gz
+mkdir nexus
+tar xvzf nexus-2.11.2-06-bundle.tar.gz 
+ln -s nexus-2.11.2-06/* nexus/
+adduser nexus
+sudo chown -R nexus:nexus /opt/nexus
+change RUN_as_USER in nexus file to nexus user
+
+* Execute the following commands to add nexus service to boot.
+
+
+ln -s /opt/nexus/bin/nexus /etc/init.d/nexus
+sudo chkconfig --add nexus
+sudo chkconfig --levels 345 nexus on
+su - nexus
+
+service nexus status
+service nexus restart
+
+http://<ip>/8081/nexus
+user:admin
+pass:admin123
+
+for jenkins pluguin have to download fron sonatype ,jenkins plugin wont work
+
+
+Reference site
+
+http://www.sonatype.org/nexus/2017/01/25/how-to-install-latest-sonatype-nexus-3-on-linux/

@@ -1,0 +1,127 @@
+Apache Tomcat is a web server and servlet container that is used to serve Java applications.
+
+
+Prerequisites
+
+ INSTALL JAVA
+  
+/**To install OpenJDK 7 JDK using yum, run this command **/
+
+
+  sudo yum install java-1.7.0-openjdk-devel   
+
+
+ /** Create Tomcat User **/
+
+   sudo groupadd tomcat
+   
+
+/** Create user with /opt/tomcat as home dir and /bin/nologin shell and tomcat group **/
+     
+     sudo useradd -M -s /bin/nologin -g tomcat -d /opt/tomcat tomcat
+
+
+/** Find the latest version of Tomcat 8 at the Tomcat 8 Downloads page. **/
+  
+    wget http://apache.mirrors.ionfish.org/tomcat/tomcat-8/v8.5.9/bin/apache-tomcat-8.5.9.tar.gz
+
+
+/** We're going to install Tomcat to the /opt/tomcat directory. Create the directory, then extract the the archive. **/
+
+
+    sudo mkdir /opt/tomcat
+    sudo tar xvf apache-tomcat-8*tar.gz -C /opt/tomcat --strip-components=1
+
+Update Permissions
+
+/*** Give the tomcat group ownership over the entire installation directory ***/
+
+    cd /opt/tomcat
+    sudo chgrp -R tomcat /opt/tomcat
+
+/*** Next, give the tomcat group read access to the conf directory and all of its contents, and execute access to the directory  ***/
+
+    sudo chmod -R g+r conf
+    sudo chmod g+x conf
+
+/** Then make the tomcat user the owner of the webapps, work, temp, and logs directories ***/
+
+
+    sudo chown -R tomcat webapps/ work/ temp/ logs/
+
+
+Install Systemd Unit File
+
+
+  sudo vi /etc/systemd/system/tomcat.service
+
+
+# Systemd unit file for tomcat
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=syslog.target network.target
+
+[Service]
+Type=forking
+
+Environment=JAVA_HOME=/usr/lib/jvm/jre
+Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
+Environment=CATALINA_HOME=/opt/tomcat
+Environment=CATALINA_BASE=/opt/tomcat
+Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
+Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+
+ExecStart=/opt/tomcat/bin/startup.sh
+ExecStop=/bin/kill -15 $MAINPID
+
+User=tomcat
+Group=tomcat
+UMask=0007
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target    
+
+
+
+
+
+/*** Now reload Systemd to load the Tomcat unit file ***/
+
+
+  sudo systemctl daemon-reload
+
+  sudo systemctl start tomcat
+
+  sudo systemctl status tomcat
+
+  sudo systemctl enable tomcat
+
+
+ Configure Tomcat Web Management Interface
+
+  sudo vi /opt/tomcat/conf/tomcat-users.xml
+
+You will want to add a user who can access the manager-gui and admin-gui
+
+
+ <tomcat-users>
+    <user username="admin" password="password" roles="manager-gui,admin-gui"/>
+ </tomcat-users>
+
+
+To change the IP address restrictions
+
+FOR THE MANAGER APP
+
+  sudo vi /opt/tomcat/webapps/manager/META-INF/context.xml
+
+FOR THE HOST APP
+
+  sudo vi /opt/tomcat/webapps/host-manager/META-INF/context.xml
+
+Inside, comment out the IP address restriction to allow connections from anywhere. 
+
+
+ sudo systemctl restart tomcat

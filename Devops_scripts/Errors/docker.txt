@@ -1,0 +1,30 @@
+
+FIRST ERROR 
+
+
+Error response from daemon: Get https://registry-1.docker.io/v2/: dial tcp: lookup registry-1.docker.io on [::1]:53: read udp [::1]:48188->[::1]:53: read: connection refused.
+
+
+Solution :
+
+         Problem occured due to docker0 interface network changed the ip
+
+
+
+
+ERROR 2:
+
+  /dev/centos/root filled up 
+
+  solution: 
+
+       Extend the volume using Lvm
+
+
+ERROR 3:
+
+   devicemapper: Error running deviceCreate (CreateSnapDeviceRaw) dm_task_run failed
+
+   solution:
+
+    removing everything in /var/lib/docker and restart docker with care

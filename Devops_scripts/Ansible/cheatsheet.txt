@@ -1,0 +1,64 @@
+INSTALL ANSIBLE 
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+Yum install ansible /*** REDHAT ***/MAKE SURE ENABLE EPEL REPO
+
+apt-get install ansible  /*** UBUNTU ***/
+
+pip install ansible    /*** USING PIP  ***/
+
+
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+
+PLAYBOOKS ARE WRITTEN IN YAML
+
+Tasks are executed sequentially invokes Ansible Modules.
+
+
+INVENTORY 
+
+These are the target groups and nodes on which the playbooks should be executed.
+
+All the AWS, AZURE, GCF, Openstack, Vmware  
+
+
+MODULES 
+
+These are pieces of code where we use to write tasks.
+
+Checkout Module Index.
+
+PLUGINS
+
+plugins are the Gear in Engine. 
+
+
+AD OCH COMMANDS
+
+ansible web -m ping 
+
+ansible localhost -m setup  /*** GATHERING FACTS ***/
+
+ansible  
+
+
+VARIABLES
+
+
+
+
+
+HANDLERS
+
+
+These are special tasks that run at the end of a play if notified by another task
+
+If a Configuration file gets a changed notify a service restart task it needs to run. 
+
+
+ROLES
+
+Roles are a packages of closely related Ansible content that can be shared easily than plays alone.
+
+
