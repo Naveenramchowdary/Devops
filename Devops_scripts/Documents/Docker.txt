@@ -139,6 +139,8 @@ Docker images
 
 Images are the building blocks of the Docker world. You launch your containers from images. Images are the "build" part of Docker's life cycle.
 
+Images live inside repositories, and repositories live on registries.
+
 
 Registries
 
@@ -182,4 +184,25 @@ docker attach <container name>  ----> brings to container bash
 
 docker logs <container name>  -f flag like tail  -t for timestamp
 
-docker top <container name>
+docker top <container name> for checking process 
+
+docker inspect <container name> for container info
+
+docker stop <container name >  sends sigterm signal / docker kill <con name > send sigkill
+
+docker rm `docker ps -a -q` ----> Deletes all containers 
+
+ You'll find all your containers in the  /var/lib/docker/containers
+
+
+ docker pull ---> To pull images 
+
+ docker search ---> To search images
+
+ docker commit ID User/name 
+
+ docker build -t="repo/name" .(path)
+
+ docker build  --no-cache
+
+ docker history to check history
