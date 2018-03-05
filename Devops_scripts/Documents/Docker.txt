@@ -206,3 +206,70 @@ docker rm `docker ps -a -q` ----> Deletes all containers
  docker build  --no-cache
 
  docker history to check history
+
+ -d -H tcp://0.0.0.0:2376 --tlsverify -- ↩
+tlscacert=/etc/docker/ca.pem --tlscert=/etc/docker/server-cert. ↩
+pem --tlskey=/etc/docker/server-key.pem
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                                               DOCKER MACHINE
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+docker-machine  create --driver generic --generic-ip-address 192.168.0.7 --generic-ssh-user naveen --generic-ssh-key /home/naveen/.ssh/id_rsa test5
+
+INSTALL DOCKER CLIENT AND DOCKER MACHINE AND DOCKER COMPOSE ON THE MACHINE USING FOR DOCKER MACHINE
+
+INSTALL DOCKER- CE ON OTHER MACHINE 
+
+MAKE GETENFORCE ZERO STOP FIREWALLD
+
+sudo yum install -y yum-utils \
+    device-mapper-persistent-data \
+    lvm2
+
+sudo yum-config-manager \
+  --add-repo \
+  https://download.docker.com/linux/centos/docker-ce.repo
+
+
+CREATE A USER WITH SUDO PRIVILEGES ON BOTH MACHINES
+
+COPY THE SSH KEY TO THE MACHINE WE NEED TO RUN OUR COMMANDS SO THAT WE CAN LOGIN WITHOUT PASSWD
+
+ssh-copy-id  user@192.168.11.2
+
+
+RUN IN DOCKER MACHINE THESE COMMANDS TO ADD A HOST TO DOCKER MACHINE
+
+docker-machine  create --driver generic --generic-ip-address 192.168.0.7 --generic-ssh-user naveen --generic-ssh-key /home/naveen/.ssh/id_rsa test
+
+TO CHECK CONNECTED MACHINES
+docker-machine ls
+
+TO REGENERATE CERTIFICATES
+docker-machine regenerate-certs swarm
+
+TO MAKE A DOCKER MACHINE ACTIVE TO RUN COMMANDS
+eval $(docker-machine env test)
+
+
+TO TEST THE CONNECTION 
+
+docker info
+
+docker run hello-world
+
+
+
+TO CREATE A AWS MACHINE WITH DOCKER MACHINE USE AMAZONEC2 DRIVER 
+
+docker-machine create --driver amazonec2 --amazonec2-access-key $AWS_ACCESS_KEY_ID --amazonec2-secret-key=$AWS_SECRET_ACCESS_KEY --amazonec2-open-port 8000 --amazonec2-region us-west-2 --amazonec2-instance-type "t2.micro" --amazonec2-ami ami-223f945a --amazonec2-ssh-user ec2user awsdocker
+
+It creates a docker-machine security group

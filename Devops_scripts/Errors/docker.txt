@@ -28,3 +28,8 @@ ERROR 3:
    solution:
 
     removing everything in /var/lib/docker and restart docker with care
+
+
+ERROR 4:
+   
+   Docker daemon forbidden check proxy add no proxy variable
